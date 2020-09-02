@@ -1,59 +1,55 @@
-//Create variables here
-var dog, happyDog, database, foodS, foodStock;
+var dog,dogImg,dogImg1;
+var database;
+var foodS,foodStock;
 
-function preload()
-{
-  //load images here
-  dogHappy = loadImage("happydog.png");
-  doggy = loadImage("Dog.png");
-}
+function preload(){
+   dogImg=loadImage("Images/Dog.png");
+   dogImg1=loadImage("Images/happy dog.png");
+  }
 
+//Function to set initial environment
 function setup() {
-  database = firebase.database();
-  createCanvas(500, 500);
-  
-  dog=createSprite(width/2, 350, 10,10);
-  dog.addImage(doggy);
-  dog.scale=0.2;
+  database=firebase.database();
+  createCanvas(500,500);
+
+  dog=createSprite(250,300,150,150);
+  dog.addImage(dogImg);
+  dog.scale=0.15;
 
   foodStock=database.ref('Food');
-  foodStock.on("Value",readStock);
-  
+  foodStock.on("value",readStock);
+  textSize(20); 
 }
 
-
-function draw() {  
-  background(46, 139, 87);
-
+// function to display UI
+function draw() {
+  background(46,139,87);
+ 
   if(keyWentDown(UP_ARROW)){
     writeStock(foodS);
-    dog.addImage(dogHappy);
+    dog.addImage(dogImg1);
   }
 
   drawSprites();
-  //add styles here
-  textSize(10);
-  fill("white");
-  stroke("white");
-  text("Food Remaining: "+foodStock,300,30);
+  fill(255,255,254);
+  stroke("black");
+  text("Food remaining : "+foodS,170,200);
+  textSize(13);
+  text("Note: Press UP_ARROW Key To Feed Drago Milk!",130,10,300,20);
 }
 
 //Function to read values from DB
-function readStock(data) {
+function readStock(data){
   foodS=data.val();
-  dog.x = foodS.x;
-  dog.y = foodS.y;
 }
 
 //Function to write values in DB
-function writeStock(x) {
-  
-  if (x<=0) {
+function writeStock(x){
+  if(x<=0){
     x=0;
-  } else {
+  }else{
     x=x-1;
-  }
-
+  } 
   database.ref('/').update({
     Food:x
   })
